@@ -84,47 +84,44 @@ app.get('/resta2',(req,res)=>{
 })
 
 //10 conejos
-//http:3000/conejos?p=3&np=5&nc=3&tm=20
+//http://localhost:3000/conejos?p=3&nPar=5&nCri=3&tMor=20
 app.get('/conejos',(req,res)=>{
-    var pobActual=0;
-    var pobMuere=0;
-    var pobTotal=0;
-    var parejas=0;
-
+    var pActual=0,pMuere=0,pTotal=0,numCrias=0,parejas=0;
+    const resultados=new Array();
     //periodo
-    const periodo = parseInt(req.query.p)
-    //numero de parejas
-    const numParejas = parseInt(req.query.np)
-    //numero de crias
-    const numCrias = parseInt(req.query.nc)
-    //tasa de mortalidad
-    const tasMortal = parseInt(req.query.tm)
+    const peri=parseInt(req.query.p);
+    //número de parejas conejos
+    const nParejas=parseInt(req.query.nPar);
+    //número de crías
+    const nCrias=parseInt(req.query.nCri);
+    //tasa de Mortalidad
+    const tMort=parseInt(req.query.tMor);
 
-    for(let i=0; i< periodo; i++){
+    for(let i=0;i<=peri;i++){
         if(i==0){
-            pobActual = numParejas * 2;
-            pobMuere = pobActual * tasMortal/100;
-            pobTotal = pobActual - pobMuere;
-        }else{
-            numCrias = numParejas*numCrias
-            pobActual += numCrias;
-            pobMuere = pobActual * tasMortal/100;
-            pobTotal = pobActual - pobMuere; 
-            parejas = pobTotal/2;
+        parejas=nParejas;
+        pActual=nParejas*2;
+        pMuere=pActual*tMort/100;
+        pTotal=pActual-pMuere;}
+        else{
+            numCrias=nParejas*nCrias;
+            pActual+=numCrias;
+            pMuere=pActual*tMort/100;
+            pTotal=pActual-pMuere;
+            parejas=pTotal/2;
         }
-        const resultados={
-            pobAnual:pobActual,
-            pobMorir:pobMuere,
-            pobRestante:pobTotal,
-            NParejas:parejas,
-            Ncrias:numCrias
-        };
-        res.json(resultados);
+        
+        resultados.push(
+            {pAnual:pActual,
+                pMorir:pMuere,                          
+                pRestante:pTotal,
+                nParejas:parejas,
+                nCrias:numCrias});
         
     }
-
-
-})
+    
+    res.json(resultados);
+});
 
 //servicio que escuche por el puerto 3000
 app.listen(3000)
